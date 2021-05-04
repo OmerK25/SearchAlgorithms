@@ -15,9 +15,9 @@ public class InputFile {
 	Integer n, m;
 	State startingPosition;
 	State solution;
-	Integer firstSpaceLocation = -1;
 	Integer spaces = 0;
-	ArrayList<String> spacesLocation = new ArrayList<>();
+	ArrayList<String> startSpacesLocation = new ArrayList<>();
+	ArrayList<String> solutionSpacesLocation = new ArrayList<>();
 
 	/*
 	 *  constructor, reads the data from the command line and fill the parameters.
@@ -36,7 +36,7 @@ public class InputFile {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		fileName = "input.txt";
+		fileName = "input2.txt";
 		algo = commands.get(0);
 		if( commands.get(1).contains("with"))
 			printTime = true;
@@ -51,13 +51,12 @@ public class InputFile {
 
 		int pos = 0;
 		spaces = 0;
-		spacesLocation.clear();
 		for(int i = 4; i < 4+n; i++) {
 			String boardLine[] = commands.get(i).split(",");
 			for(int j = 0; j< boardLine.length; j++) {
 				if(boardLine[j].equals("_")) {
 					startPositionBoard[pos][j] = -1;
-					spacesLocation.add(i-4+""+ j+"");
+					startSpacesLocation.add(i-4+""+ j+"");
 					spaces++;
 				}
 				else {
@@ -66,18 +65,17 @@ public class InputFile {
 			}
 			pos++;
 		}
-		startingPosition = new State(startPositionBoard, spaces, spacesLocation);
-		
+		startingPosition = new State(startPositionBoard, spaces, startSpacesLocation);		
 		Integer[][] SolutionPositionBoard = new Integer[n][m];
 		spaces = 0;
 		pos = 0;
-		spacesLocation.clear();
+
 		for(int i = 5+n; i < 5+n+n; i++) {
 			String boardLine[] = commands.get(i).split(",");
 			for(int j = 0; j< boardLine.length; j++) {
 				if(boardLine[j].equals("_")) {
 					SolutionPositionBoard[pos][j] = -1;
-				spacesLocation.add(i-(5+n)+""+ j+"");
+				this.solutionSpacesLocation.add(i-(5+n)+""+ j+"");
 				spaces++;
 				}
 				else {
@@ -86,7 +84,7 @@ public class InputFile {
 			}
 			pos++;
 		}
-		solution = new State(SolutionPositionBoard, spaces, spacesLocation);
+		solution = new State(SolutionPositionBoard, spaces, solutionSpacesLocation);
 	}
 	/*
 	 * Getters Setters
@@ -143,11 +141,6 @@ public class InputFile {
 	public void setSolution(State solution) {
 		this.solution = solution;
 	}
-	public Integer getFirstSpaceLocation() {
-		return firstSpaceLocation;
-	}
-	public void setFirstSpaceLocation(Integer firstSpaceLocation) {
-		this.firstSpaceLocation = firstSpaceLocation;
-	}
+
 
 }
