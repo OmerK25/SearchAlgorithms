@@ -33,6 +33,8 @@ public class OutputFile {
 			FileWriter myWriter = new FileWriter(this.pathOutputFile);
 			myWriter.write("no path\n");
 			myWriter.write("Num: " + counterNodes + "\n");
+			System.out.println("NO PATH");
+			System.out.println("num:"+counterNodes);
 			if (printTime) { myWriter.write("Time: " + (double)totalTime/1_000_000_000.0 + "\n"); }
 			myWriter.close();
 		} catch (IOException e) {

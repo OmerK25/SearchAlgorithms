@@ -42,9 +42,6 @@ public class BFS implements SearchAlgo {
 			this.output.printToScreen(validateState.toString());
 			for(Move m : validateState.getPossiblleMoves()) {
 				State son = new State(validateState, m); //create son State for some direction		
-				System.out.println(m+ " -----> move");
-				System.out.println(son.getSpacesLocation() + " ----> locLoc");
-
 				if (!son.equals(validateState) && 
 						!this.visitedList.containsKey(son.toString()) &&
 						!this.openList.containsKey(son.toString())) {

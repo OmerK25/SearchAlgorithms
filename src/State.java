@@ -15,12 +15,11 @@ public class State {
 	private State parent = null;
 	private Integer n, m , cost = 0;
 	private String roadTo = "";
-
+	private Integer f;
 
 	/*
 	 * Constructor.
 	 */
-
 	//Constructor from scratch
 	State(Integer[][] board, int spaces, ArrayList<String> spacesLocation){
 		this.n = board.length;
@@ -29,7 +28,6 @@ public class State {
 		this.spacesAmount = spaces;
 		this.spacesLocation = spacesLocation;
 	}
-
 	/*
 	 * Son constructor
 	 * get a father state and a Move, and change the board of the son acordinally
@@ -57,10 +55,19 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"L";
 			this.board[i1][j1-1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			spacesLocation.add(""+i1+j1);
-			if(spacesAmount == 2)
-				spacesLocation.add(father.spacesLocation.get(1));
 
+			if(spacesAmount == 1)
+				spacesLocation.add(""+i1+j1);
+			if(spacesAmount == 2) {
+				if(father.spacesLocation.get(0).equals(""+i1+(j1-1))) {
+					spacesLocation.add(""+i1+j1);
+					spacesLocation.add(father.spacesLocation.get(1));
+				}
+				else {
+					spacesLocation.add(father.spacesLocation.get(0));
+					spacesLocation.add(""+i1+(j1-1));
+				}
+			}
 			this.cost += 5;
 			break;
 
@@ -68,9 +75,18 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"R";
 			this.board[i1][j1+1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			spacesLocation.add(""+i1+j1);	
-			if(spacesAmount == 2)
-				spacesLocation.add(father.spacesLocation.get(1));
+			if(spacesAmount == 1)
+				spacesLocation.add(""+i1+j1);
+			if(spacesAmount == 2) {
+				if(father.spacesLocation.get(0).equals(""+i1+(j1+1))) {
+					spacesLocation.add(""+i1+j1);
+					spacesLocation.add(father.spacesLocation.get(1));
+				}
+				else {
+					spacesLocation.add(father.spacesLocation.get(0));
+					spacesLocation.add(""+i1+(j1+1));
+				}
+			}
 			this.cost += 5;
 			break;
 
@@ -78,9 +94,18 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"U";
 			this.board[i1-1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			spacesLocation.add(""+i1+j1);
-			if(spacesAmount == 2)
-				spacesLocation.add(father.spacesLocation.get(1));
+			if(spacesAmount == 1)
+				spacesLocation.add(""+i1+j1);
+			if(spacesAmount == 2) {
+				if(father.spacesLocation.get(0).equals(""+(i1-1)+j1)) {
+					spacesLocation.add(""+i1+j1);
+					spacesLocation.add(father.spacesLocation.get(1));
+				}
+				else {
+					spacesLocation.add(father.spacesLocation.get(0));
+					spacesLocation.add(""+(i1-1)+j1);
+				}
+			}
 			this.cost += 5;
 			break;
 
@@ -88,9 +113,18 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"D";
 			this.board[i1+1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			spacesLocation.add(""+i1+j1);
-			if(spacesAmount == 2)
-				spacesLocation.add(father.spacesLocation.get(1));
+			if(spacesAmount == 1)
+				spacesLocation.add(""+i1+j1);
+			if(spacesAmount == 2) {
+				if(father.spacesLocation.get(0).equals(""+(i1+1)+j1)) {
+					spacesLocation.add(""+i1+j1);
+					spacesLocation.add(father.spacesLocation.get(1));
+				}
+				else {
+					spacesLocation.add(father.spacesLocation.get(0));
+					spacesLocation.add(""+(i1+1)+j1);
+				}
+			}
 			this.cost += 5;
 			break;
 
@@ -98,7 +132,7 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"&"+this.board[i2][j2]+"L";
 			this.board[i1][j1-1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			this.board[i2+1][j2-1] = this.board[i2][j2];
+			this.board[i2][j2-1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
@@ -114,6 +148,7 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2][j2+1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
+
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			if(i1 == i2)
@@ -194,7 +229,7 @@ public class State {
 					move.add(new Move(PossibleMoves.DOUBLELEFT, r1, (Math.max(c1, c2)+1),r1,  (Math.max(c1, c2)+2)));
 				if(r1 != n-1)
 					move.add(new Move(PossibleMoves.DOUBLEUP, (r1+1), Math.min(c1, c2),(r1+1),  Math.max(c1, c2)));
-				if(c1 != 1 && c2 != 1)
+				if(c1 != 1 && c2 != 1) 
 					move.add(new Move(PossibleMoves.DOUBLETRIGHT, r1, (Math.min(c1, c2)-1),r1, (Math.min(c1, c2)-2)));
 				if(r1 != 0)
 					move.add(new Move(PossibleMoves.DOUBLEDOWN, (r1-1), Math.min(c1, c2),(r1-1), Math.max(c1, c2)));
@@ -204,13 +239,13 @@ public class State {
 			if(Math.abs(r1-r2) == 1 && Math.abs(c1-c2) == 0) {
 
 				if(c1 != m-1)
-					move.add(new Move(PossibleMoves.DOUBLELEFT, (c1+1), Math.min(r1,r2),(c1+1),  Math.max(r1,r2)));
+					move.add(new Move(PossibleMoves.DOUBLELEFT, Math.min(r1,r2),(c1+1), Math.max(r1,r2),(c1+1)));
 				if(r1 != 1 && r2 != 1)
-					move.add(new Move(PossibleMoves.DOUBLEUP, c1,  (Math.max(r1,r2)+1),c1, (Math.max(r1,r2)+2)));
-				if(c1 != 0)
-					move.add(new Move(PossibleMoves.DOUBLETRIGHT, (c1-1), Math.min(r1,r2),(c1-1),  Math.max(r1,r2)));
+					move.add(new Move(PossibleMoves.DOUBLEUP, (Math.max(r1,r2)+1), c1, (Math.max(r1,r2)+2),c1));
+				if(c1 != 0) 
+					move.add(new Move(PossibleMoves.DOUBLETRIGHT, Math.min(r1,r2), (c1-1),  Math.max(r1,r2),(c1-1)));
 				if(r1 != (n-2) && r2 != (n-2))
-					move.add(new Move(PossibleMoves.DOUBLEDOWN, c1,(Math.min(r1,r2)-1),c1,  (Math.min(r1,r2)-2)));
+					move.add(new Move(PossibleMoves.DOUBLEDOWN,(Math.min(r1,r2)-1),c1,(Math.min(r1,r2)-2),c1));
 			}
 		}
 		/*
@@ -242,12 +277,23 @@ public class State {
 		return move;
 	}
 
-
-
 	/*
 	 * Getters Setters
 	 */
 
+	public Integer getF(State solution) {
+		int counter = 0;
+		for(int i=0; i<this.board.length; i++)
+			for(int j=0; j<this.board[i].length; j++)
+				if(this.board[i][j] != solution.board[i][j])
+					counter++;
+
+		return counter;
+	}
+
+	public void setF(Integer f) {
+		this.f = f;
+	}
 	public Integer[][] getBoard() {
 		return board;
 	}

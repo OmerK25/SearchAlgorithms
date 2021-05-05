@@ -14,6 +14,9 @@ public class Ex1 {
 		case "BFS":
 			searchAlgorithm = new BFS(input,output);
 			break;
+		case "A*" :
+			searchAlgorithm = new A_Asterisk(input,output);
+
 		default:
 			break;
 		}		

@@ -26,7 +26,7 @@ public class InputFile {
 	public InputFile() {
 		ArrayList<String> commands = new ArrayList<>();
 		try {
-			File myObj = new File("input2.txt");
+			File myObj = new File("input.txt");
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				commands.add(myReader.nextLine());
@@ -36,7 +36,7 @@ public class InputFile {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		fileName = "input2.txt";
+		fileName = "input.txt";
 		algo = commands.get(0);
 		if( commands.get(1).contains("with"))
 			printTime = true;
@@ -75,8 +75,8 @@ public class InputFile {
 			for(int j = 0; j< boardLine.length; j++) {
 				if(boardLine[j].equals("_")) {
 					SolutionPositionBoard[pos][j] = -1;
-				this.solutionSpacesLocation.add(i-(5+n)+""+ j+"");
-				spaces++;
+					this.solutionSpacesLocation.add(i-(5+n)+""+ j+"");
+					spaces++;
 				}
 				else {
 					SolutionPositionBoard[pos][j] = Integer.parseInt(boardLine[j]);
