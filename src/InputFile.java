@@ -26,7 +26,7 @@ public class InputFile {
 	public InputFile() {
 		ArrayList<String> commands = new ArrayList<>();
 		try {
-			File myObj = new File("input.txt");
+			File myObj = new File("input2.txt");
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				commands.add(myReader.nextLine());
@@ -36,7 +36,7 @@ public class InputFile {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		fileName = "input.txt";
+		fileName = "input2.txt";
 		algo = commands.get(0);
 		if( commands.get(1).contains("with"))
 			printTime = true;

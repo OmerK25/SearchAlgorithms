@@ -52,8 +52,8 @@ public class A_Asterisk implements SearchAlgo {
 			if(!(pq.isEmpty()))
 				temp = pq.poll(); //pull the top of the queue
 
-			if(temp != null)
-				openList.put(temp.toString(), temp);			
+			//			if(temp != null)
+			openList.put(temp.toString(), temp);			
 		}
 		if(temp.equals(end)) { // found the solution
 			endTime = System.nanoTime();
