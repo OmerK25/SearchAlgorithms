@@ -11,13 +11,13 @@ public class Move {
 		this.p = p;
 		this.i1 = i;
 		this.j1 = j;
-		this.i2 = -1;
-		this.j2 = -1;
+		this.i2 = -2;
+		this.j2 = -2;
 	}
 
 	@Override
 	public String toString() {
-		if(i2 == -1)
+		if(i2 == -2)
 			return "Move "+ this.p +" index ["+i1+j1+"]" ;
 		return "Move "+ this.p +" index ["+i1+j1+"] and index ["+i2+j2+"]" ;
 	}
@@ -69,5 +69,4 @@ public class Move {
 		this.i2 = i2;
 		this.j2 = j2;
 	}
-
 }

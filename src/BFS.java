@@ -27,6 +27,7 @@ public class BFS implements SearchAlgo {
 		while(!front.isEmpty()) {
 			State n = front.poll();
 			closeList.put(n.toString(), n);
+			openList.remove(n.toString(),n);
 			this.output.printToScreen(n.toString());
 			for (Move m : n.getPossiblleMoves()) {
 				State son = new State(n, m);

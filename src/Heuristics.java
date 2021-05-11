@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Heuristics implements Comparator<State> {
@@ -9,14 +10,23 @@ public class Heuristics implements Comparator<State> {
 	public Heuristics(State end) {
 		solution = end;
 	}
-
-	public int compare(State State1, State State2) {
-		if( State1.getF(solution) > State2.getF(solution)) return 1;
-		else if (State1.getF(solution) < State2.getF(solution)) return -1;
-		else if( State1.getF(solution) == State2.getF(solution)) {
-			if(State1.getCost() > State2.getCost()) return 1;
-			else return -1;
-		}
-		return 0;
+	public int compare(State s1, State s2) {
+		int f1 = s1.getF(solution);
+		int f2 = s2.getF(solution);
+		int pm1 = PossibleMoves.valueOf(s1.getPm()+"").ordinal();
+		int pm2 = PossibleMoves.valueOf(s2.getPm()+"").ordinal();
+		if(f1 > f2) return 1;
+		else if(f1 < f2)
+			return -1;
+		else if(s1.getCreationTime() < s2.getCreationTime())
+			return -1;
+		else if(s1.getCreationTime() > s2.getCreationTime())
+			return 1;
+		else 	if(pm1 < pm2) 
+			return -1;
+		else 	if(pm1 > pm2)
+			return 1;
+		else
+			return 0;
 	}
 }

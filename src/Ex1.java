@@ -15,8 +15,15 @@ public class Ex1 {
 			searchAlgorithm = new BFS(input,output);
 			break;
 		case "A*" :
-			searchAlgorithm = new A_Asterisk(input,output);
-
+			searchAlgorithm = new Astar(input,output);
+			break;
+		case "IDA*":
+			searchAlgorithm = new IDAstar(input,output);
+			break;
+		case "DFBnB" :
+			searchAlgorithm = new DFBnB(input,output);
+			break;
+			
 		default:
 			break;
 		}		

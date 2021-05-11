@@ -1,12 +1,12 @@
 
 	public enum PossibleMoves {
-		LEFT,
-		RIGHT,
-		UP,
-		DOWN,
 		DOUBLELEFT,
-		DOUBLETRIGHT,
 		DOUBLEUP,
+		DOUBLETRIGHT,
 		DOUBLEDOWN,
+		LEFT,
+		UP,
+		RIGHT,
+		DOWN
 	}
 

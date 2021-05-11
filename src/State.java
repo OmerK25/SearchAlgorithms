@@ -1,6 +1,8 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +17,17 @@ public class State {
 	private State parent = null;
 	private Integer n, m , cost = 0;
 	private String roadTo = "";
-	private Integer f;
+	private Integer f = 0;
+	private PossibleMoves pm;
+	boolean mark = false;
+	int creationTime = 0;
 
+	public boolean isMark() {
+		return mark;
+	}
+	public void setMark(boolean mark) {
+		this.mark = mark;
+	}
 	/*
 	 * Constructor.
 	 */
@@ -30,7 +41,7 @@ public class State {
 	}
 	/*
 	 * Son constructor
-	 * get a father state and a Move, and change the board of the son acordinally
+	 * get a father state and a Move, and change the board of the son accordingly
 	 */
 	State(State father, Move move) {
 		this.board = new Integer[father.n][father.m];
@@ -38,6 +49,8 @@ public class State {
 			for(int j=0; j<father.board[i].length; j++)
 				this.board[i][j]=father.board[i][j];
 
+		this.creationTime = father.creationTime+1;
+		this.pm = move.getP();
 		this.parent = father;
 		this.cost = father.cost;
 		this.roadTo = father.roadTo;
@@ -48,15 +61,13 @@ public class State {
 		int j1 = move.getJ1();
 		int i2 = move.getI2();
 		int j2 = move.getJ2();
-
-		PossibleMoves a = move.getP();
-		switch (a){
+		switch (this.pm){
 		case LEFT :
 			this.roadTo += "-"+this.board[i1][j1]+"L";
 			this.board[i1][j1-1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
 
-			if(spacesAmount == 1)
+			if(spacesAmount == 1) 
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
 				if(father.spacesLocation.get(0).equals(""+i1+(j1-1))) {
@@ -65,8 +76,9 @@ public class State {
 				}
 				else {
 					spacesLocation.add(father.spacesLocation.get(0));
-					spacesLocation.add(""+i1+(j1-1));
+					spacesLocation.add(""+i1+j1);
 				}
+				fixSpacesLocation(spacesLocation);
 			}
 			this.cost += 5;
 			break;
@@ -75,6 +87,7 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"R";
 			this.board[i1][j1+1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
+
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -84,8 +97,9 @@ public class State {
 				}
 				else {
 					spacesLocation.add(father.spacesLocation.get(0));
-					spacesLocation.add(""+i1+(j1+1));
+					spacesLocation.add(""+i1+j1);
 				}
+				fixSpacesLocation(spacesLocation);
 			}
 			this.cost += 5;
 			break;
@@ -94,6 +108,7 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"U";
 			this.board[i1-1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
+
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -103,13 +118,15 @@ public class State {
 				}
 				else {
 					spacesLocation.add(father.spacesLocation.get(0));
-					spacesLocation.add(""+(i1-1)+j1);
+					spacesLocation.add(""+i1+j1);
 				}
+				fixSpacesLocation(spacesLocation);
 			}
 			this.cost += 5;
 			break;
 
 		case DOWN :
+
 			this.roadTo += "-"+this.board[i1][j1]+"D";
 			this.board[i1+1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
@@ -122,8 +139,9 @@ public class State {
 				}
 				else {
 					spacesLocation.add(father.spacesLocation.get(0));
-					spacesLocation.add(""+(i1+1)+j1);
+					spacesLocation.add(""+i1+j1);
 				}
+				fixSpacesLocation(spacesLocation);
 			}
 			this.cost += 5;
 			break;
@@ -136,10 +154,8 @@ public class State {
 			this.board[i2][j2] = -1;
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
-			if(i1 == i2)
-				this.cost += 6;
-			if(j1 == j2)
-				this.cost += 7;
+			fixSpacesLocation(spacesLocation);
+			this.cost += 6;
 			break;
 
 		case DOUBLETRIGHT :
@@ -151,10 +167,8 @@ public class State {
 
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
-			if(i1 == i2)
-				this.cost += 6;
-			if(j1 == j2)
-				this.cost += 7;
+			fixSpacesLocation(spacesLocation);
+			this.cost += 6;
 			break;
 
 		case DOUBLEUP :
@@ -165,10 +179,8 @@ public class State {
 			this.board[i2][j2] = -1;
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
-			if(i1 == i2)
-				this.cost += 6;
-			if(j1 == j2)
-				this.cost += 7;
+			fixSpacesLocation(spacesLocation);
+			this.cost += 7;
 			break;
 
 		case DOUBLEDOWN :
@@ -179,14 +191,19 @@ public class State {
 			this.board[i2][j2] = -1;
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
-			if(i1 == i2)
-				this.cost += 6;
-			if(j1 == j2)
-				this.cost += 7;
+			fixSpacesLocation(spacesLocation);
+
+			this.cost += 7;
 			break;
 		}
 	}
 
+	public int getCreationTime() {
+		return creationTime;
+	}
+	public void setCreationTime(int creationTime) {
+		this.creationTime = creationTime;
+	}
 	@Override
 	//this function check if the states are equals.
 	public boolean equals(Object obj){
@@ -209,8 +226,8 @@ public class State {
 		String splt1[] = spacesLocation.get(0).split("");
 		int r1 = Integer.parseInt(splt1[0]);
 		int c1 = Integer.parseInt(splt1[1]);
-		int r2 = -1;
-		int c2 = -1;
+		int r2 = -2;
+		int c2 = -2;
 		// if it has two spaces squares, it can go LEFT RIGHT UP DOWN, each with up to 2 squares, and also DOUBLE move.
 		if(spacesAmount == 2) {
 			String splt2[] = spacesLocation.get(1).split("");
@@ -219,58 +236,121 @@ public class State {
 			// Now check for DOUBLE moves:
 			//Adjust in the same row.
 			if(Math.abs(r1-r2) == 0 && Math.abs(c1-c2) == 1) {
-				if(r1 != n-1)
-					move.add(new Move(PossibleMoves.DOUBLEUP, (r1+1), Math.min(c1, c2),(r1+1),  Math.max(c1, c2)));
-				if(r1 != 0)
-					move.add(new Move(PossibleMoves.DOUBLEDOWN, (r1-1), Math.min(c1, c2),(r1-1), Math.max(c1, c2)));
+				if(pm!=PossibleMoves.DOUBLEDOWN && pm!=PossibleMoves.DOWN)
+					if(r1 != n-1)
+						move.add(new Move(PossibleMoves.DOUBLEUP, (r1+1), Math.min(c1, c2),(r1+1),  Math.max(c1, c2)));
+				if(pm!=PossibleMoves.DOUBLEUP && pm!=PossibleMoves.UP)
+					if(r1 != 0) 
+						move.add(new Move(PossibleMoves.DOUBLEDOWN, (r1-1), Math.min(c1, c2),(r1-1), Math.max(c1, c2)));
 			}
 			//Adjust in the same column.
 			if(Math.abs(r1-r2) == 1 && Math.abs(c1-c2) == 0) {
-				if(c1 != m-1)
-					move.add(new Move(PossibleMoves.DOUBLELEFT, Math.min(r1,r2),(c1+1), Math.max(r1,r2),(c1+1)));
-				if(c1 != 0) 
-					move.add(new Move(PossibleMoves.DOUBLETRIGHT, Math.min(r1,r2), (c1-1),  Math.max(r1,r2),(c1-1)));		
+				if(pm!=PossibleMoves.DOUBLETRIGHT && pm!=PossibleMoves.RIGHT)
+					if(c1 != m-1)
+						move.add(new Move(PossibleMoves.DOUBLELEFT, Math.min(r1,r2),(c1+1), Math.max(r1,r2),(c1+1)));
+				if(pm!=PossibleMoves.DOUBLELEFT && pm!=PossibleMoves.LEFT)
+					if(c1 != 0) 
+						move.add(new Move(PossibleMoves.DOUBLETRIGHT, Math.min(r1,r2), (c1-1),  Math.max(r1,r2),(c1-1)));		
 			}
 		}
 		// if it has only one space square, only LEFT RIGHT UP DOWN possible moves:
 		//first space
-		if(c1 != (m-1) && board[r1][c1+1] != -1)
-			move.add(new Move(PossibleMoves.LEFT, r1, (c1+1)));
-		if(r1 != (n-1) && board[r1+1][c1] != -1) 
-			move.add(new Move(PossibleMoves.UP, (r1+1), c1));
-		if(c1 != 0 && board[r1][c1-1] != -1 ) 
-			move.add(new Move(PossibleMoves.RIGHT, r1, (c1-1)));
-		if(r1 != 0 && board[r1-1][c1] != -1 )
-			move.add(new Move(PossibleMoves.DOWN, (r1-1), c1));
+		if(pm!=PossibleMoves.DOUBLETRIGHT)
+			if(c1 != (m-1) && board[r1][c1+1] != -1) 
+				move.add(new Move(PossibleMoves.LEFT, r1, (c1+1)));
+		if(pm!=PossibleMoves.DOUBLEDOWN)
+			if(r1 != (n-1) && board[r1+1][c1] != -1) 
+				move.add(new Move(PossibleMoves.UP, (r1+1), c1));
+		if(pm!=PossibleMoves.DOUBLELEFT)
+			if(c1 != 0 && board[r1][c1-1] != -1 ) 
+				move.add(new Move(PossibleMoves.RIGHT, r1, (c1-1)));
+		if(pm!=PossibleMoves.DOUBLEUP)
+			if(r1 != 0 && board[r1-1][c1] != -1 )
+				move.add(new Move(PossibleMoves.DOWN, (r1-1), c1));
 
 		//second space
-		if(c2 != -1 && r2 != -1) {
-			if(c2 != (m-1) && board[r2][c2+1] != -1)
-				move.add(new Move(PossibleMoves.LEFT, r2, (c2+1)));
-			if(r2 != (n-1) && board[r2+1][c2] != -1) 
-				move.add(new Move(PossibleMoves.UP, (r2+1), c2));
-			if(c2 != 0 &&board[r2][c2-1] != -1)
-				move.add(new Move(PossibleMoves.RIGHT, r2, (c2-1)));
-			if(r2 != 0 && board[r2-1][c2] != -1 )
-				move.add(new Move(PossibleMoves.DOWN, (r2-1), r1));
+		if(c2 != -2 && r2 != -2) {
+			if(pm!=PossibleMoves.DOUBLETRIGHT)
+				if(c2 != (m-1) && board[r2][c2+1] != -1)
+					move.add(new Move(PossibleMoves.LEFT, r2, (c2+1)));
+			if(pm!=PossibleMoves.DOUBLEDOWN)
+				if(r2 != (n-1) && board[r2+1][c2] != -1) 
+					move.add(new Move(PossibleMoves.UP, (r2+1), c2));
+			if(pm!=PossibleMoves.DOUBLELEFT)
+				if(c2 != 0 &&board[r2][c2-1] != -1)
+					move.add(new Move(PossibleMoves.RIGHT, r2, (c2-1)));
+			if(pm!=PossibleMoves.DOUBLEUP)
+				if(r2 != 0 && board[r2-1][c2] != -1 )
+					move.add(new Move(PossibleMoves.DOWN, (r2-1), c2));
 		}
 		return move;
 	}
 
+	private int ManDist(State sol) {
+		int sumDistance=0;
+		for(int i=0; i<this.getBoard().length; i++) {
+			for(int j=0; j<this.getBoard()[i].length; j++) {
+				int block = this.getBoard()[i][j];
+				if(block == -1)
+					continue;
+				for(int k=0; k<sol.getBoard().length; k++) {
+					for(int w=0; w<sol.getBoard()[k].length; w++) {
+						if(sol.getBoard()[k][w] == block) {
+							sumDistance+=Math.abs(i-k)+Math.abs(j-w);
+						}
+					}
+				}
+			}
+		}
+		return sumDistance;
+	}
+
+	private int TileMiss(State sol){ 
+		int distance=0;
+		for(int i=0; i<this.getBoard().length; i++) {
+			for(int j=0; j<this.getBoard()[i].length; j++) {
+				int block = this.getBoard()[i][j];
+				if(block == -1)
+					continue;
+				for(int k=0; k<sol.getBoard().length; k++) {
+					for(int w=0; w<sol.getBoard()[k].length; w++) {
+						if(sol.getBoard()[k][w] == block) {
+							if(i != k) 
+								distance++;		
+							if(j != w) 
+								distance++;	
+						}
+					}
+				}
+			}
+		}
+		System.out.println(distance);
+		return distance;
+	}
+	public void fixSpacesLocation(ArrayList<String> spacesLoc) {
+		if(spacesLoc.get(1).charAt(0) < spacesLoc.get(0).charAt(0)) 
+			Collections.swap(spacesLoc, 0, 1);
+		if(spacesLoc.get(1).charAt(0) == spacesLoc.get(0).charAt(0))
+			if(spacesLoc.get(1).charAt(1) == spacesLoc.get(0).charAt(1))
+				Collections.swap(spacesLoc, 0, 1);
+	}
+
 	// Getters Setters
-
-	public Integer getF(State solution) {
-		int counter = 0;
-		for(int i=0; i<this.board.length; i++)
-			for(int j=0; j<this.board[i].length; j++)
-				if(this.board[i][j] != solution.board[i][j])
-					counter++;
-
-		return counter;
+	public Integer getF(State sol) {
+		if(this.f != 0)
+			return this.f;
+		setF( this.getCost()+ 3*ManDist(sol));
+		return this.f;
 	}
 
 	public void setF(Integer f) {
 		this.f = f;
+	}
+	public PossibleMoves getPm() {
+		return pm;
+	}
+	public void setPm(PossibleMoves pm) {
+		this.pm = pm;
 	}
 	public Integer[][] getBoard() {
 		return board;
@@ -339,6 +419,14 @@ public class State {
 
 	@Override
 	public String toString() {
-		return Arrays.deepToString(this.board);
+		String s = "";
+		for (Integer[] row : this.board) {
+			for(Integer h : row)
+			{
+				s+=h+",";
+			}
+			s+="\n";
+		}
+		return s;
 	}
 }
