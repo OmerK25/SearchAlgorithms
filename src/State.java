@@ -15,9 +15,10 @@ public class State {
 	private ArrayList<String> spacesLocation = new ArrayList<>();
 	private Integer[][] board;
 	private State parent = null;
+	private State grandParent = null;
 	private Integer n, m , cost = 0;
 	private String roadTo = "";
-	private Integer f = 0;
+	private Double f = 0.0;
 	private PossibleMoves pm;
 	boolean mark = false;
 	int creationTime = 0;
@@ -52,6 +53,7 @@ public class State {
 		this.creationTime = father.creationTime+1;
 		this.pm = move.getP();
 		this.parent = father;
+		this.grandParent = father.parent;
 		this.cost = father.cost;
 		this.roadTo = father.roadTo;
 		this.n = father.n;
@@ -61,12 +63,22 @@ public class State {
 		int j1 = move.getJ1();
 		int i2 = move.getI2();
 		int j2 = move.getJ2();
+		boolean sameAsGrand = true;
 		switch (this.pm){
 		case LEFT :
 			this.roadTo += "-"+this.board[i1][j1]+"L";
 			this.board[i1][j1-1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			if(spacesAmount == 1) 
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -87,7 +99,16 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"R";
 			this.board[i1][j1+1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -108,7 +129,16 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"U";
 			this.board[i1-1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -130,6 +160,16 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"D";
 			this.board[i1+1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -152,6 +192,16 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2][j2-1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -164,7 +214,16 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2][j2+1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
-
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -177,6 +236,16 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2-1][j2] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -189,6 +258,16 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2+1][j2] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
+			if(grandParent != null) {
+				for(int i=0; i<this.board.length; i++) {
+					for(int j=0; j<this.board[i].length; j++) {
+						if(this.board[i][j] != grandParent.getBoard()[i][j])
+							sameAsGrand = false;
+					}
+				}
+				if(sameAsGrand)
+					return;
+			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -286,8 +365,8 @@ public class State {
 		return move;
 	}
 
-	private int ManDist(State sol) {
-		int sumDistance=0;
+	private Double ManDist(State sol) {
+		Double sumDistance=0.0;
 		for(int i=0; i<this.getBoard().length; i++) {
 			for(int j=0; j<this.getBoard()[i].length; j++) {
 				int block = this.getBoard()[i][j];
@@ -324,7 +403,6 @@ public class State {
 				}
 			}
 		}
-		System.out.println(distance);
 		return distance;
 	}
 	public void fixSpacesLocation(ArrayList<String> spacesLoc) {
@@ -335,15 +413,33 @@ public class State {
 				Collections.swap(spacesLoc, 0, 1);
 	}
 
+	private double multiplie(){
+		if(spacesAmount == 1) return 5; // one block
+		if(spacesStatus().equals("Horizon")) return 3;
+		else return 3.5;
+	}
+
+	public String spacesStatus(){
+		int x1 =Integer.parseInt(String.valueOf(spacesLocation.get(0).charAt(0)));
+		int y1 = Integer.parseInt(String.valueOf(spacesLocation.get(0).charAt(1)));
+		int x2 = Integer.parseInt(String.valueOf(spacesLocation.get(1).charAt(0)));
+		int y2 = Integer.parseInt(String.valueOf(spacesLocation.get(1).charAt(1)));
+		if(Math.abs(x1-x2) == 0 && Math.abs(y1-y2) == 1)
+			return "Horizon";
+		if(Math.abs(x1-x2) == 1 && Math.abs(y1-y2) == 0)
+			return "Vertical";
+		else
+			return "not connected";
+	}
 	// Getters Setters
-	public Integer getF(State sol) {
+	public Double getF(State sol) {
 		if(this.f != 0)
 			return this.f;
-		setF( this.getCost()+ 3*ManDist(sol));
+		setF( this.getCost()+ ManDist(sol)*multiplie());
 		return this.f;
 	}
 
-	public void setF(Integer f) {
+	public void setF(Double f) {
 		this.f = f;
 	}
 	public PossibleMoves getPm() {

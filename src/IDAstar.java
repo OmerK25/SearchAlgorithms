@@ -28,10 +28,10 @@ public class IDAstar  implements SearchAlgo{
 		boolean flag = false;
 		startTime = System.nanoTime();
 
-		int threshold = this.start.getF(this.solution); // set the start threshold
+		Double threshold = this.start.getF(this.solution); // set the start threshold
 
-		while(threshold != Integer.MAX_VALUE) {
-			int minF = Integer.MAX_VALUE;
+		while(threshold != Double.MAX_VALUE) {
+			Double minF = Double.MAX_VALUE;
 			s.push(this.start);
 			start.setMark(false);
 			openList.put(start.toString(), start);
@@ -46,6 +46,8 @@ public class IDAstar  implements SearchAlgo{
 					s.push(n);
 					for (Move m : n.getPossiblleMoves()) {
 						State son = new State(n, m);
+						if(son.getSpacesLocation().isEmpty())
+							continue;
 						counterStates++;
 						if(son.getF(solution)>threshold) {
 							minF = Math.min(minF, son.getF(solution));

@@ -41,6 +41,8 @@ public class Astar  implements SearchAlgo{
 			closeList.put(n.toString(), n);
 			for (Move m : n.getPossiblleMoves()) {
 				State son = new State(n, m);
+				if(son.getSpacesLocation().isEmpty())
+					continue;
 				if(!son.equals(n)) {
 					if(!closeList.containsKey(son.toString()) && !openList.containsKey(son.toString())) {
 						counterNodes++;

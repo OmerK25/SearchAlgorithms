@@ -24,7 +24,7 @@ public class DFBnB implements SearchAlgo{
 	@Override
 	public void search() {
 		ArrayList<State> sons = new ArrayList<State>();
-		int threshold = Integer.MAX_VALUE;
+		Double threshold = Double.MAX_VALUE;
 		State result = null;
 		this.openList.put(this.start.toString(), this.start);
 		this.st.push(this.start);
@@ -39,8 +39,12 @@ public class DFBnB implements SearchAlgo{
 				st.push(n);
 				for (Move m : n.getPossiblleMoves()) {
 					State son = new State(n, m);
-					sons.add(son);
-					counterStates++;
+					if(son.getSpacesLocation().isEmpty())
+						continue;
+					if (!openList.containsKey(son.toString()) && son!=null && !son.getParent().equals(son) && !son.equals(this.start)) {
+						sons.add(son);
+						counterStates++;
+					}
 				}
 				sons.sort(heuristic);
 				Iterator<State> it = sons.iterator();
@@ -71,12 +75,11 @@ public class DFBnB implements SearchAlgo{
 							it.remove();
 						}
 					}
-
-					Collections.reverse(sons);
-					for(State rev : sons)	{
-						st.add(rev);
-						openList.put(rev.toString(), rev);
-					}
+				}
+				Collections.reverse(sons);
+				for(State rev : sons)	{
+					st.push(rev);
+					openList.put(rev.toString(), rev);
 				}
 			}
 		}

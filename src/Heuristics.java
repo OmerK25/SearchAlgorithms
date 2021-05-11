@@ -11,8 +11,8 @@ public class Heuristics implements Comparator<State> {
 		solution = end;
 	}
 	public int compare(State s1, State s2) {
-		int f1 = s1.getF(solution);
-		int f2 = s2.getF(solution);
+		Double f1 = s1.getF(solution);
+		Double f2 = s2.getF(solution);
 		int pm1 = PossibleMoves.valueOf(s1.getPm()+"").ordinal();
 		int pm2 = PossibleMoves.valueOf(s2.getPm()+"").ordinal();
 		if(f1 > f2) return 1;
