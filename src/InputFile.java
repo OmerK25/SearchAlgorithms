@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 /*
  * This class represents the input file that given to the program before it starts.
+ * it read the file from the cmd, and fill all the details.
  */
 public class InputFile {
 	String fileName;
@@ -26,7 +27,7 @@ public class InputFile {
 	public InputFile() {
 		ArrayList<String> commands = new ArrayList<>();
 		try {
-			File myObj = new File("input2.txt");
+			File myObj = new File("input.txt");
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				commands.add(myReader.nextLine());
@@ -36,7 +37,7 @@ public class InputFile {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
-		fileName = "input2.txt";
+		fileName = "input.txt";
 		algo = commands.get(0);
 		if( commands.get(1).contains("with"))
 			printTime = true;

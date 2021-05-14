@@ -1,4 +1,7 @@
-
+/*
+ * This class represents the Heuristic function.
+ * it compares 2 given states by their F function.
+ */
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -15,13 +18,16 @@ public class Heuristics implements Comparator<State> {
 		Double f2 = s2.getF(solution);
 		int pm1 = PossibleMoves.valueOf(s1.getPm()+"").ordinal();
 		int pm2 = PossibleMoves.valueOf(s2.getPm()+"").ordinal();
+		//Check F directly.
 		if(f1 > f2) return 1;
 		else if(f1 < f2)
 			return -1;
+		//check iteration number.
 		else if(s1.getCreationTime() < s2.getCreationTime())
 			return -1;
 		else if(s1.getCreationTime() > s2.getCreationTime())
 			return 1;
+		//check move order.
 		else 	if(pm1 < pm2) 
 			return -1;
 		else 	if(pm1 > pm2)

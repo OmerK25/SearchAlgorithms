@@ -15,20 +15,13 @@ public class State {
 	private ArrayList<String> spacesLocation = new ArrayList<>();
 	private Integer[][] board;
 	private State parent = null;
-	private State grandParent = null;
 	private Integer n, m , cost = 0;
 	private String roadTo = "";
 	private Double f = 0.0;
 	private PossibleMoves pm;
+	private Integer I1 = -5,I2 = -5,J1 = -5,J2 = -5;
 	boolean mark = false;
 	int creationTime = 0;
-
-	public boolean isMark() {
-		return mark;
-	}
-	public void setMark(boolean mark) {
-		this.mark = mark;
-	}
 	/*
 	 * Constructor.
 	 */
@@ -52,8 +45,11 @@ public class State {
 
 		this.creationTime = father.creationTime+1;
 		this.pm = move.getP();
+		this.I1 = move.getI1();
+		this.I2 = move.getI2();
+		this.J1 = move.getJ1();
+		this.J2 = move.getJ2();
 		this.parent = father;
-		this.grandParent = father.parent;
 		this.cost = father.cost;
 		this.roadTo = father.roadTo;
 		this.n = father.n;
@@ -63,22 +59,18 @@ public class State {
 		int j1 = move.getJ1();
 		int i2 = move.getI2();
 		int j2 = move.getJ2();
-		boolean sameAsGrand = true;
+
+		/*
+		 * Switch on the Move.
+		 * check if the move is LEFT, RIGHT etc,
+		 * and change the board by it.
+		 * also updating the spaces location and the cost.
+		 */
 		switch (this.pm){
 		case LEFT :
 			this.roadTo += "-"+this.board[i1][j1]+"L";
 			this.board[i1][j1-1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			if(spacesAmount == 1) 
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -99,16 +91,6 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"R";
 			this.board[i1][j1+1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -129,16 +111,6 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"U";
 			this.board[i1-1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -160,16 +132,6 @@ public class State {
 			this.roadTo += "-"+this.board[i1][j1]+"D";
 			this.board[i1+1][j1] = this.board[i1][j1];
 			this.board[i1][j1] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			if(spacesAmount == 1)
 				spacesLocation.add(""+i1+j1);
 			if(spacesAmount == 2) {
@@ -192,16 +154,6 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2][j2-1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -214,16 +166,6 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2][j2+1] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -236,16 +178,6 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2-1][j2] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -258,16 +190,6 @@ public class State {
 			this.board[i1][j1] = -1;
 			this.board[i2+1][j2] = this.board[i2][j2];
 			this.board[i2][j2] = -1;
-			if(grandParent != null) {
-				for(int i=0; i<this.board.length; i++) {
-					for(int j=0; j<this.board[i].length; j++) {
-						if(this.board[i][j] != grandParent.getBoard()[i][j])
-							sameAsGrand = false;
-					}
-				}
-				if(sameAsGrand)
-					return;
-			}
 			spacesLocation.add(""+i1+j1);
 			spacesLocation.add(""+i2+j2);
 			fixSpacesLocation(spacesLocation);
@@ -299,6 +221,8 @@ public class State {
 	}
 	/*
 	 * This function check all the possible moves and return them to the algorithm.
+	 * it checks at every step if a move is possible by the board situation, i.e it checks if you aren't going our of the board.
+	 * also it prevent creating repeating moves, i.e left after double right and so.
 	 */
 	ArrayList<Move> getPossiblleMoves(){
 		ArrayList<Move>	move = new ArrayList<>();
@@ -335,36 +259,46 @@ public class State {
 		// if it has only one space square, only LEFT RIGHT UP DOWN possible moves:
 		//first space
 		if(pm!=PossibleMoves.DOUBLETRIGHT)
-			if(c1 != (m-1) && board[r1][c1+1] != -1) 
-				move.add(new Move(PossibleMoves.LEFT, r1, (c1+1)));
+			if(!(pm == PossibleMoves.RIGHT  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+				if(c1 != (m-1) && board[r1][c1+1] != -1) 
+					move.add(new Move(PossibleMoves.LEFT, r1, (c1+1)));
 		if(pm!=PossibleMoves.DOUBLEDOWN)
-			if(r1 != (n-1) && board[r1+1][c1] != -1) 
-				move.add(new Move(PossibleMoves.UP, (r1+1), c1));
+			if(!(pm == PossibleMoves.DOWN  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+				if(r1 != (n-1) && board[r1+1][c1] != -1) 
+					move.add(new Move(PossibleMoves.UP, (r1+1), c1));
 		if(pm!=PossibleMoves.DOUBLELEFT)
-			if(c1 != 0 && board[r1][c1-1] != -1 ) 
-				move.add(new Move(PossibleMoves.RIGHT, r1, (c1-1)));
+			if(!(pm == PossibleMoves.LEFT  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+				if(c1 != 0 && board[r1][c1-1] != -1 ) 
+					move.add(new Move(PossibleMoves.RIGHT, r1, (c1-1)));
 		if(pm!=PossibleMoves.DOUBLEUP)
-			if(r1 != 0 && board[r1-1][c1] != -1 )
-				move.add(new Move(PossibleMoves.DOWN, (r1-1), c1));
+			if(!(pm == PossibleMoves.UP  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+				if(r1 != 0 && board[r1-1][c1] != -1 )
+					move.add(new Move(PossibleMoves.DOWN, (r1-1), c1));
 
 		//second space
 		if(c2 != -2 && r2 != -2) {
 			if(pm!=PossibleMoves.DOUBLETRIGHT)
-				if(c2 != (m-1) && board[r2][c2+1] != -1)
-					move.add(new Move(PossibleMoves.LEFT, r2, (c2+1)));
+				if(!(pm == PossibleMoves.RIGHT  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+					if(c2 != (m-1) && board[r2][c2+1] != -1)
+						move.add(new Move(PossibleMoves.LEFT, r2, (c2+1)));
 			if(pm!=PossibleMoves.DOUBLEDOWN)
-				if(r2 != (n-1) && board[r2+1][c2] != -1) 
-					move.add(new Move(PossibleMoves.UP, (r2+1), c2));
+				if(!(pm == PossibleMoves.DOWN  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+					if(r2 != (n-1) && board[r2+1][c2] != -1) 
+						move.add(new Move(PossibleMoves.UP, (r2+1), c2));
 			if(pm!=PossibleMoves.DOUBLELEFT)
-				if(c2 != 0 &&board[r2][c2-1] != -1)
-					move.add(new Move(PossibleMoves.RIGHT, r2, (c2-1)));
+				if(!(pm == PossibleMoves.LEFT  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+					if(c2 != 0 &&board[r2][c2-1] != -1)
+						move.add(new Move(PossibleMoves.RIGHT, r2, (c2-1)));
 			if(pm!=PossibleMoves.DOUBLEUP)
-				if(r2 != 0 && board[r2-1][c2] != -1 )
-					move.add(new Move(PossibleMoves.DOWN, (r2-1), c2));
+				if(!(pm == PossibleMoves.UP  && (r1==I1 && c1 == J1) || (r1==I2 && c1 == J2)))
+					if(r2 != 0 && board[r2-1][c2] != -1 )
+						move.add(new Move(PossibleMoves.DOWN, (r2-1), c2));
 		}
 		return move;
 	}
-
+	/*
+	 * Simple Manhattan distance method, calculate the distance between this state and the goal state.
+	 */
 	private Double ManDist(State sol) {
 		Double sumDistance=0.0;
 		for(int i=0; i<this.getBoard().length; i++) {
@@ -383,28 +317,9 @@ public class State {
 		}
 		return sumDistance;
 	}
-
-	private int TileMiss(State sol){ 
-		int distance=0;
-		for(int i=0; i<this.getBoard().length; i++) {
-			for(int j=0; j<this.getBoard()[i].length; j++) {
-				int block = this.getBoard()[i][j];
-				if(block == -1)
-					continue;
-				for(int k=0; k<sol.getBoard().length; k++) {
-					for(int w=0; w<sol.getBoard()[k].length; w++) {
-						if(sol.getBoard()[k][w] == block) {
-							if(i != k) 
-								distance++;		
-							if(j != w) 
-								distance++;	
-						}
-					}
-				}
-			}
-		}
-		return distance;
-	}
+	/*
+	 * This functions make sure that the first empty block will be changed, and not the second.
+	 */
 	public void fixSpacesLocation(ArrayList<String> spacesLoc) {
 		if(spacesLoc.get(1).charAt(0) < spacesLoc.get(0).charAt(0)) 
 			Collections.swap(spacesLoc, 0, 1);
@@ -413,12 +328,23 @@ public class State {
 				Collections.swap(spacesLoc, 0, 1);
 	}
 
+	/*
+	 * Determined the the multiplier of the Manhattan distance.
+	 * if there is only 1 empty block, multiple by 5, which is the cost.
+	 * if there are 2 vertical blocks, multiple by 3.5, because to move 2 block vertically it cost 7.
+	 * same for Horizontally, multiple by 3.
+	 * if there are 2 empty blocks but they aren't connected, multiple by 3.83, which is the average between 5,3.5,3.
+	 */
 	private double multiplie(){
 		if(spacesAmount == 1) return 5; // one block
 		if(spacesStatus().equals("Horizon")) return 3;
-		else return 3.5;
+		if(spacesStatus().equals("Vertical")) return 3.5;
+		else return 3.83;
 	}
 
+	/*
+	 * Function to check if 2 empty block are connected in any way.
+	 */
 	public String spacesStatus(){
 		int x1 =Integer.parseInt(String.valueOf(spacesLocation.get(0).charAt(0)));
 		int y1 = Integer.parseInt(String.valueOf(spacesLocation.get(0).charAt(1)));
@@ -432,13 +358,21 @@ public class State {
 			return "not connected";
 	}
 	// Getters Setters
+
+	//Set the F of a state only once.
+	//F = G+H.
 	public Double getF(State sol) {
 		if(this.f != 0)
 			return this.f;
 		setF( this.getCost()+ ManDist(sol)*multiplie());
 		return this.f;
 	}
-
+	public boolean isMark() {
+		return mark;
+	}
+	public void setMark(boolean mark) {
+		this.mark = mark;
+	}
 	public void setF(Double f) {
 		this.f = f;
 	}

@@ -29,8 +29,13 @@ public class Astar  implements SearchAlgo{
 		startTime = System.nanoTime();
 		pq.add(start);
 		openList.put(start.toString(),start);
+		//loop until the queue is empty, then we are done.
 		while(!pq.isEmpty()) {
+			if(output.getOpenList()) 
+				for (State s : openList.values()) 
+					System.out.println(s+" \n");			
 			State n = pq.poll();
+			//check if goal is achieved
 			if(n.equals(end)) {
 				endTime = System.nanoTime();
 				totalTime = endTime - startTime;
@@ -39,10 +44,9 @@ public class Astar  implements SearchAlgo{
 			}
 			openList.remove(n.toString(),n);
 			closeList.put(n.toString(), n);
+			//created all the possible sons and loop on them.
 			for (Move m : n.getPossiblleMoves()) {
 				State son = new State(n, m);
-				if(son.getSpacesLocation().isEmpty())
-					continue;
 				if(!son.equals(n)) {
 					if(!closeList.containsKey(son.toString()) && !openList.containsKey(son.toString())) {
 						counterNodes++;
@@ -58,5 +62,4 @@ public class Astar  implements SearchAlgo{
 		System.out.println("NO PATH");
 		System.out.println(counterNodes);
 	}
-
 }

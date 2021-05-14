@@ -72,5 +72,21 @@ public class OutputFile {
 
 		return price(result.getParent()) + result.getCost();
 	}
+
+	public Boolean getOpenList() {
+		return openList;
+	}
+
+	public void setOpenList(Boolean openList) {
+		this.openList = openList;
+	}
+
+	public Boolean getPrintTime() {
+		return printTime;
+	}
+
+	public void setPrintTime(Boolean printTime) {
+		this.printTime = printTime;
+	}
 }
 

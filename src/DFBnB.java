@@ -28,7 +28,11 @@ public class DFBnB implements SearchAlgo{
 		State result = null;
 		this.openList.put(this.start.toString(), this.start);
 		this.st.push(this.start);
+		if(output.getOpenList()) 
+			for (State s : openList.values()) 
+				System.out.println(s+" \n");		
 		this.startTime = System.nanoTime();
+		//loop until the stack is empty.
 		while(!st.isEmpty()) {
 			State n = st.pop();
 			if(n.isMark()) {
@@ -37,15 +41,15 @@ public class DFBnB implements SearchAlgo{
 			else {
 				n.setMark(true);
 				st.push(n);
+				//created all the possible sons and loop on them.
 				for (Move m : n.getPossiblleMoves()) {
 					State son = new State(n, m);
-					if(son.getSpacesLocation().isEmpty())
-						continue;
 					if (!openList.containsKey(son.toString()) && son!=null && !son.getParent().equals(son) && !son.equals(this.start)) {
 						sons.add(son);
 						counterStates++;
 					}
 				}
+				//sort all the sons by the F function.
 				sons.sort(heuristic);
 				Iterator<State> it = sons.iterator();
 				while (it.hasNext()) {
@@ -67,6 +71,7 @@ public class DFBnB implements SearchAlgo{
 							st.remove(g);
 						}
 					}
+					//check if goal achieved.
 					else if(g.equals(solution)) {
 						threshold = g.getF(solution);
 						result = g;
@@ -89,7 +94,6 @@ public class DFBnB implements SearchAlgo{
 		if(result == null) {
 			System.out.println("NO PATH");
 			System.out.println("NUM : "+ counterStates);
-			//			this.output.printToFileOnFailed(this.counterStates, totalTime);
 		}
 		else
 			output.printToFile(result, this.counterStates, this.totalTime);

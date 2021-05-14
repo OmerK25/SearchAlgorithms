@@ -1,9 +1,8 @@
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-
+/*
+ * The main of the program.
+ * create input file from the given input,
+ * and calls the correct algorithm by it.
+ */
 public class Ex1 {
 
 	public static void main(String[] args) {
@@ -23,7 +22,9 @@ public class Ex1 {
 		case "DFBnB" :
 			searchAlgorithm = new DFBnB(input,output);
 			break;
-			
+		case "DFID":
+			searchAlgorithm = new DFID(input,output);
+
 		default:
 			break;
 		}		

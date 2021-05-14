@@ -1,5 +1,6 @@
 /*
  * This class represents a possible move on the board in a given state.
+ * it contains the name of the move, and the moving indexes.
  */
 
 public class Move {

@@ -35,7 +35,10 @@ public class IDAstar  implements SearchAlgo{
 			s.push(this.start);
 			start.setMark(false);
 			openList.put(start.toString(), start);
-
+			if(output.getOpenList()) 
+				for (State s : openList.values()) 
+					System.out.println(s+" \n");		
+			//loop until the stack is empty.
 			while (!s.isEmpty()) {
 				State n = s.pop();
 				this.output.printToScreen(n.toString());
@@ -44,10 +47,9 @@ public class IDAstar  implements SearchAlgo{
 				else {
 					n.setMark(true);
 					s.push(n);
+					//created all the possible sons and loop on them.
 					for (Move m : n.getPossiblleMoves()) {
 						State son = new State(n, m);
-						if(son.getSpacesLocation().isEmpty())
-							continue;
 						counterStates++;
 						if(son.getF(solution)>threshold) {
 							minF = Math.min(minF, son.getF(solution));
@@ -65,6 +67,7 @@ public class IDAstar  implements SearchAlgo{
 								continue;
 							}
 						}
+						//check if goal is achieved.
 						if(son.equals(this.solution)) {
 							flag=true;
 							this.endTime = System.nanoTime();
